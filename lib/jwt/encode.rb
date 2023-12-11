@@ -13,7 +13,7 @@ module JWT
       @payload          = options[:payload]
       @key              = options[:key]
       @algorithm        = resolve_algorithm(options[:algorithm])
-      @headers          = options[:headers].transform_keys(&:to_s)
+      @headers          = options[:headers].each_with_object({}) { |(key, value), headers| headers[key.to_s] = value }
       @headers[ALG_KEY] = @algorithm.alg
     end
 

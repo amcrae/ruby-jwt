@@ -16,7 +16,7 @@ module JWT
 
         key_params = extract_key_params(key)
 
-        params = params.transform_keys(&:to_sym)
+        params = params.each_with_object({}) { |(key, value), coll| coll[key.to_sym] = value }
         check_jwk_params!(key_params, params)
         super(options, key_params.merge(params))
       end
@@ -66,7 +66,7 @@ module JWT
           @verify_key = key
           parse_okp_key_params(@verify_key)
         when Hash
-          key.transform_keys(&:to_sym)
+          key.each_with_object({}) { |(key, value), coll| coll[key.to_sym] = value }
         else
           raise ArgumentError, 'key must be of type RbNaCl::Signatures::Ed25519::SigningKey, RbNaCl::Signatures::Ed25519::VerifyKey or Hash with key parameters'
         end

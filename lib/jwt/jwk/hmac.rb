@@ -17,7 +17,7 @@ module JWT
 
         key_params = extract_key_params(key)
 
-        params = params.transform_keys(&:to_sym)
+        params = params.each_with_object({}) { |(key, value), coll| coll[key.to_sym] = value }
         check_jwk(key_params, params)
 
         super(options, key_params.merge(params))
@@ -81,7 +81,7 @@ module JWT
         when String # Accept String key as input
           { kty: KTY, k: key }
         when Hash
-          key.transform_keys(&:to_sym)
+          key.each_with_object({}) { |(key, value), coll| coll[key.to_sym] = value }
         else
           raise ArgumentError, 'key must be of type String or Hash with key parameters'
         end

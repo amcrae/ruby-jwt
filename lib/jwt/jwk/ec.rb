@@ -20,7 +20,7 @@ module JWT
 
         key_params = extract_key_params(key)
 
-        params = params.transform_keys(&:to_sym)
+        params = params.each_with_object({}) { |(key, value), pars| pars[key.to_sym] = value }
         check_jwk_params!(key_params, params)
 
         super(options, key_params.merge(params))
@@ -85,7 +85,7 @@ module JWT
           @ec_key = key # Preserve the object to avoid recreation
           parse_ec_key(key)
         when Hash
-          key.transform_keys(&:to_sym)
+          key.each_with_object({}) { |(key, value), coll| coll[key.to_sym] = value }
         else
           raise ArgumentError, 'key must be of type OpenSSL::PKey::EC or Hash with key parameters'
         end
@@ -137,7 +137,7 @@ module JWT
           x: encode_octets(x_octets),
           y: encode_octets(y_octets),
           d: encode_octets(octets)
-        }.compact
+        }.select { |k,v| v!=nil }
       end
 
       if ::JWT.openssl_3?

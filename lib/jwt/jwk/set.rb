@@ -19,7 +19,7 @@ module JWT
                 when JWT::JWK::KeyBase # Singleton
                   [jwks]
                 when Hash
-                  jwks = jwks.transform_keys(&:to_sym)
+                  jwks = jwks.each_with_object({}) { |(key, value), coll| coll[key.to_sym] = value }
                   [*jwks[:keys]].map { |k| JWT::JWK.new(k, nil, options) }
                 when Array
                   jwks.map { |k| JWT::JWK.new(k, nil, options) }

@@ -11,7 +11,7 @@ module JWT
     ].freeze
 
     def initialize(payload)
-      @payload = payload.transform_keys(&:to_sym)
+      @payload = payload.each_with_object({}) { |(key, value), pay| pay[key.to_sym] = value }
     end
 
     def validate!

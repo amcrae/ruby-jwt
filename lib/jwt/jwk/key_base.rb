@@ -11,7 +11,7 @@ module JWT
       def initialize(options, params = {})
         options ||= {}
 
-        @parameters = params.transform_keys(&:to_sym) # Uniform interface
+        @parameters = params.each_with_object({}) { |(key, value), coll| coll[key.to_sym] = value } # Uniform interface
 
         # For backwards compatibility, kid_generator may be specified in the parameters
         options[:kid_generator] ||= @parameters.delete(:kid_generator)

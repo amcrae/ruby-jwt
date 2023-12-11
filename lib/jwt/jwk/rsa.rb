@@ -21,7 +21,7 @@ module JWT
 
         key_params = extract_key_params(key)
 
-        params = params.transform_keys(&:to_sym)
+        params = params.each_with_object({}) { |(key, value), coll| coll[key.to_sym] = value }
         check_jwk_params!(key_params, params)
 
         super(options, key_params.merge(params))
@@ -85,7 +85,7 @@ module JWT
           @rsa_key = key # Preserve the object to avoid recreation
           parse_rsa_key(key)
         when Hash
-          key.transform_keys(&:to_sym)
+          key.each_with_object({}) { |(key, value), coll| coll[key.to_sym] = value }
         else
           raise ArgumentError, 'key must be of type OpenSSL::PKey::RSA or Hash with key parameters'
         end
@@ -108,7 +108,7 @@ module JWT
           dp: encode_open_ssl_bn(key.dmp1),
           dq: encode_open_ssl_bn(key.dmq1),
           qi: encode_open_ssl_bn(key.iqmp)
-        }.compact
+        }.select { |k,v| v!=nil}
       end
 
       def jwk_attributes(*attributes)
