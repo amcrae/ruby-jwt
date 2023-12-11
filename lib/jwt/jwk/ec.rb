@@ -130,7 +130,7 @@ module JWT
 
       def parse_ec_key(key)
         crv, x_octets, y_octets = keypair_components(key)
-        octets = key.private_key&.to_bn&.to_s(BINARY)
+        octets = key.private_key && key.private_key.to_bn && key.private_key.to_bn.to_s(BINARY)
         {
           kty: KTY,
           crv: crv,

@@ -181,11 +181,11 @@ RSpec.describe ::JWT::Verify do
     end
     context 'when iss is a Method instance' do
       def issuer_start_with_first?(issuer)
-        issuer&.start_with?('first')
+        issuer && issuer.start_with?('first')
       end
 
       def issuer_start_with_ruby?(issuer)
-        issuer&.start_with?('ruby')
+        issuer && issuer.start_with?('ruby')
       end
 
       it 'must raise JWT::InvalidIssuerError when the method returns false' do

@@ -38,7 +38,7 @@ module JWT
       store.purpose = OpenSSL::X509::PURPOSE_ANY
       store.flags = OpenSSL::X509::V_FLAG_CRL_CHECK | OpenSSL::X509::V_FLAG_CRL_CHECK_ALL
       root_certificates.each { |certificate| store.add_cert(certificate) }
-      crls&.each { |crl| store.add_crl(crl) }
+      if ctrls then ctrls.each { |crl| store.add_crl(crl) } end
       store
     end
 
