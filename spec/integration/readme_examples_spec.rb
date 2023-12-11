@@ -289,7 +289,7 @@ RSpec.describe 'README.md code test' do
         # ---------- DECODE ----------
         jwks = JWT::JWK::Set.new(jwks_hash)
         jwks.filter! { |key| key[:use] == 'sig' } # Signing keys only!
-        algorithms = jwks.map { |key| key[:alg] }.compact.uniq
+        algorithms = jwks.map { |key| key[:alg] }.select { |v| v!=nil }.uniq
         JWT.decode(token, nil, true, algorithms: algorithms, jwks: jwks)
       end
     end
