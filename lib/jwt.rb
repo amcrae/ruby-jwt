@@ -8,6 +8,7 @@ require 'jwt/configuration'
 require 'jwt/encode'
 require 'jwt/error'
 require 'jwt/jwk'
+require 'jwt/jruby'
 
 # JSON Web Token implementation
 #

@@ -13,15 +13,15 @@ RSpec.describe JWT do
       :wrong_rsa_private => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'rsa-2048-wrong-public.pem'))),
       :wrong_rsa_public => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'rsa-2048-wrong-public.pem'))),
       'ES256_private' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-private.pem'))),
-      'ES256_public' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-public.pem'))),
+      'ES256_public' => OpenSSL::PKey::EC.new( File.read(File.join(CERT_PATH, 'ec256-public.pem')) ),
       'ES256_private_v2' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-private-v2.pem'))),
-      'ES256_public_v2' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-public-v2.pem'))),
+      'ES256_public_v2' => OpenSSL::PKey::EC.new( File.read(File.join(CERT_PATH, 'ec256-public-v2.pem')) ),
       'ES384_private' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec384-private.pem'))),
-      'ES384_public' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec384-public.pem'))),
+      'ES384_public' => OpenSSL::PKey::EC.new(File.read(File.join(CERT_PATH, 'ec384-public.pem'))),
       'ES512_private' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec512-private.pem'))),
-      'ES512_public' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec512-public.pem'))),
+      'ES512_public' => OpenSSL::PKey::EC.new(File.read(File.join(CERT_PATH, 'ec512-public.pem'))),
       'ES256K_private' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256k-private.pem'))),
-      'ES256K_public' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256k-public.pem'))),
+      'ES256K_public' => OpenSSL::PKey::EC.new(File.read(File.join(CERT_PATH, 'ec256k-public.pem'))),
       'NONE' => 'eyJhbGciOiJub25lIn0.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.',
       'HS256' => 'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.kWOVtIOpWcG7JnyJG0qOkTDbOy636XrrQhMm_8JrRQ8',
       'HS512256' => 'eyJhbGciOiJIUzUxMjI1NiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.Ds_4ibvf7z4QOBoKntEjDfthy3WJ-3rKMspTEcHE2bA',
@@ -273,8 +273,10 @@ RSpec.describe JWT do
   if ::Gem::Version.new(OpenSSL::VERSION) >= ::Gem::Version.new('2.1')
     %w[PS256 PS384 PS512].each do |alg|
       context "alg: #{alg}" do
+        
         before(:each) do
-          data[alg] = JWT.encode payload, data[:rsa_private], alg
+            if RUBY_ENGINE == 'jruby' then pending('JRuby patched version does not support PSS.'); end
+            data[alg] = JWT.encode payload, data[:rsa_private], alg
         end
 
         let(:wrong_key) { data[:wrong_rsa_public] }
