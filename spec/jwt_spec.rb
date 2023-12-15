@@ -273,8 +273,10 @@ RSpec.describe JWT do
   if ::Gem::Version.new(OpenSSL::VERSION) >= ::Gem::Version.new('2.1')
     %w[PS256 PS384 PS512].each do |alg|
       context "alg: #{alg}" do
+        
         before(:each) do
-          data[alg] = JWT.encode payload, data[:rsa_private], alg
+            if RUBY_ENGINE == 'jruby' then pending('JRuby patched version does not support PSS.'); end
+            data[alg] = JWT.encode payload, data[:rsa_private], alg
         end
 
         let(:wrong_key) { data[:wrong_rsa_public] }
