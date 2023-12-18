@@ -3,10 +3,13 @@
 require 'rspec'
 require 'simplecov'
 require 'jwt'
-require 'pry'
 
-if RUBY_ENGINE == 'jruby' then
-  require 'pry-debugger-jruby'
+# Avoid ffi>1.16 dependency in jruby<=9.1.17
+if RUBY_VERSION > "2.5" then
+  require 'pry'  
+  if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby' then
+    require 'pry-debugger-jruby'
+  end
 end
 
 puts "OpenSSL::VERSION: #{OpenSSL::VERSION}"
