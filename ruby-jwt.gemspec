@@ -31,6 +31,10 @@ Gem::Specification.new do |spec|
   spec.executables = []
   spec.require_paths = %w[lib]
 
+  # platforms :jruby do # Not availble in bundler 1.x
+  spec.add_dependency 'jruby-openssl', ">=0.14.2"
+  # end
+
   spec.add_development_dependency 'appraisal'
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake'
