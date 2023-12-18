@@ -63,9 +63,10 @@ if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
           # JRuby OpenSSL does not implement dsa_verify_asn1 and difficult to just
           # add it as an extension method as the PKey.verify takes args that would be lost.
           #public_key.dsa_verify_asn1(digest.digest(signing_input), raw_to_asn1(signature, public_key))
-          public_key.verify(digest, raw_to_asn1(signature, public_key), signing_input)
-        rescue OpenSSL::PKey::PKeyError
-          raise JWT::VerificationError, 'Signature verification raised'
+          sig_asn1 = raw_to_asn1(signature, public_key)
+          public_key.verify(digest, sig_asn1, signing_input)
+        rescue OpenSSL::PKey::PKeyError => e
+          raise JWT::VerificationError, e.message
         end
       end
     end
