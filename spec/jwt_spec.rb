@@ -275,7 +275,7 @@ RSpec.describe JWT do
       context "alg: #{alg}" do
         
         before(:each) do
-            if RUBY_ENGINE == 'jruby' then pending('JRuby patched version does not support PSS.'); end
+            if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby' then pending('JRuby patched version does not support PSS.'); end
             data[alg] = JWT.encode payload, data[:rsa_private], alg
         end
 
